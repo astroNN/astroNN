@@ -7,6 +7,7 @@ import os
 
 # Third-party
 from six.moves.urllib.request import urlretrieve, urlopen
+from six.moves.urllib.error import URLError
 
 def fetch_notMNIST(cache_path=None, download_if_missing=True, data_url=None):
     """
@@ -41,10 +42,19 @@ def fetch_notMNIST(cache_path=None, download_if_missing=True, data_url=None):
 
     cache_file = os.path.join(cache_path, os.path.basename(data_url))
 
-    # how many bytes are we expecting
-    url = urlopen(data_url)
-    meta = url.info()
-    expected_bytes = int(meta['Content-Length'])
+    try:
+        # how many bytes are we expecting
+        url = urlopen(data_url)
+        meta = url.info()
+        expected_bytes = int(meta['Content-Length'])
+    except URLError as e:
+        if os.path.exists(cache_file):
+            print("Data file exists but unable to verify against remote file.")
+            return cache_file
+        else:
+            print("Local file not found and unable to connect to remote file! Do "
+                  "you have an internet connection?")
+            raise e
 
     if (os.path.exists(cache_file) and os.stat(cache_file).st_size != expected_bytes) \
         or not os.path.exists(cache_file) or not os.path.isfile(cache_file):
