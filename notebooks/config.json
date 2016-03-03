@@ -1,7 +1,0 @@
-{
-    "notMNIST": {
-        "data_url": "https://s3.amazonaws.com/astronn/notMNIST.h5"
-    },
-    "cache_path": null,
-    "_comment": "By default, the notebooks use the current path to cache data."
-}
