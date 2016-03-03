@@ -9,11 +9,11 @@ import os
 from six.moves.urllib.request import urlretrieve, urlopen
 from six.moves.urllib.error import URLError
 
-def fetch_notMNIST(cache_path=None, download_if_missing=True, data_url=None):
+__all__ = ['fetch_notMNIST', 'fetch_GalaxyZoo']
+
+def fetch_data(data_url, cache_path=None, download_if_missing=True):
     """
-    Fetch and load the notMNIST HDF5 data. This data file is
-    about ~1.7GB, so if you don't have a local copy and you choose
-    to download (the default option) this could take a while.
+    Fetch data and return local filename
 
     Parameters
     ----------
@@ -36,9 +36,6 @@ def fetch_notMNIST(cache_path=None, download_if_missing=True, data_url=None):
         cache_path = os.getcwd()
     else:
         cache_path = os.path.expanduser(os.path.abspath(cache_path))
-
-    if data_url is None:
-        data_url = "https://s3.amazonaws.com/astronn/notMNIST.h5"
 
     cache_file = os.path.join(cache_path, os.path.basename(data_url))
 
@@ -71,3 +68,61 @@ def fetch_notMNIST(cache_path=None, download_if_missing=True, data_url=None):
         print("Data file already exists and is verified.")
 
     return cache_file
+
+def fetch_notMNIST(data_url=None, cache_path=None, download_if_missing=True):
+    """
+    Fetch and load the notMNIST HDF5 data. This data file is
+    about ~1.7GB, so if you don't have a local copy and you choose
+    to download (the default option) this could take a while.
+
+    Parameters
+    ----------
+    data_url : str (optional)
+        Path to the remote data file.
+    cache_path : str (optional)
+        Specify a path to cache the datasets. If not specified, this
+        will cache the downloaded data to the current working directory.
+    download_if_missing : bool (optional)
+        If False, raise a IOError if the data is not locally available
+        instead of trying to download the data from the source site.
+
+    Returns
+    -------
+    filename : str
+        The path to the local HDF5 data file.
+    """
+
+    if data_url is None:
+        data_url = "https://s3.amazonaws.com/astronn/notMNIST.h5"
+
+    return fetch_data(data_url=data_url, cache_path=cache_path,
+                      download_if_missing=download_if_missing)
+
+def fetch_GalaxyZoo(data_url=None, cache_path=None, download_if_missing=True):
+    """
+    Fetch and load the Galaxy Zoo HDF5 data. This data file is
+    about ~3GB, so if you don't have a local copy and you choose
+    to download (the default option) this could take a while.
+
+    Parameters
+    ----------
+    data_url : str (optional)
+        Path to the remote data file.
+    cache_path : str (optional)
+        Specify a path to cache the datasets. If not specified, this
+        will cache the downloaded data to the current working directory.
+    download_if_missing : bool (optional)
+        If False, raise a IOError if the data is not locally available
+        instead of trying to download the data from the source site.
+
+    Returns
+    -------
+    filename : str
+        The path to the local HDF5 data file.
+    """
+
+    if data_url is None:
+        data_url = "https://s3.amazonaws.com/astronn/galaxyzoo_gri.h5"
+
+    return fetch_data(data_url=data_url, cache_path=cache_path,
+                      download_if_missing=download_if_missing)
